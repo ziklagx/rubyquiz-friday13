@@ -17,6 +17,7 @@ class FridayFinder
 
 		end
 
+
 		fridays_the_13th
 
 	end
@@ -26,7 +27,7 @@ class FridayFinder
 		date = start_date
 
 		while date != end_date do 
-			if(date.day == 13 && date.friday?)
+			if(date.is_friday_the_thirteenth?)
 				return date
 			end
 
@@ -40,19 +41,17 @@ class FridayFinder
 		date = start_date
 
 		if(date.day < 13)
-			date = Date.new date.year, date.month, 13
+			date = date.to_thirteenth_of_month
 		elsif(date.day > 13)
-			date = date >> 1
-			date = Date.new date.year, date.month , 13
+			date = date.to_next_month.to_thirteenth_of_month
 		end
-
 
 		while date <= end_date do 
 			if(date.friday?)
 				return date
 			end
 
-			date = date >> 1
+			date = date.to_next_month
 		end
 	end
 
@@ -60,22 +59,50 @@ class FridayFinder
 	def check_first_day_of_month start_date, end_date
 
 		if(start_date.day > 13)
-			start_date = start_date >> 1
+			start_date = start_date.to_next_month
 		end
 
 		while start_date <= end_date do 
-			check_date = Date.new(start_date.year, start_date.month, 1)
+			check_date = start_date.to_beginning_of_month
 
 			if(check_date.sunday?)
-				return Date.new(start_date.year, start_date.month, 13)
+				return check_date.to_thirteenth_of_month
 			end
 
-			start_date = start_date >> 1
+			start_date = start_date.to_next_month
 		end
 
 
 	end
 
+	def doomsday_method
 
 
+	end
+
+end
+
+
+
+class Date
+
+	def to_next_month
+		self >> 1
+	end
+
+	def to_beginning_of_month
+		to_day_of_month 1
+	end
+
+	def to_thirteenth_of_month
+		to_day_of_month 13
+	end
+
+	def to_day_of_month day
+		Date.new(self.year, self.month, day)
+	end
+
+	def is_friday_the_thirteenth?
+		self.day == 13 && self.friday?
+	end
 end
